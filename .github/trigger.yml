@@ -1,0 +1,24 @@
+name: arcaea-wiki-sometry
+
+on:
+  schedule:
+    - cron: '5 * * * *'
+
+jobs:
+  append-file:
+    name: Append File To Wiki Page
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Edit Wiki Page
+      uses: jtmullen/mediawiki-edit-action@v0
+      with: 
+        wiki_text: "path/to/file.txt"
+        edit_summary: "Append Latest Update to File.txt"
+        page_name: "User:盐棋/Sandbox2"
+        api_url: "https://wiki.arcaea.cn/api.php"
+        username: "${{ secrets.WIKI_USEERNAME }}"
+        password: ${{ secrets.WIKI_PASSWORD }}
+        append: true
+        minor: true
