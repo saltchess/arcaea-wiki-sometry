@@ -14,7 +14,7 @@ jobs:
     - name: Edit Wiki Page
       uses: jtmullen/mediawiki-edit-action@v0
       with: 
-        wiki_text: "path/to/file.txt"
+        wiki_text: "path/to/file.txtlol"
         edit_summary: "Append Latest Update to File.txt"
         page_name: "User:盐棋/Sandbox2"
         api_url: "https://wiki.arcaea.cn/api.php"
