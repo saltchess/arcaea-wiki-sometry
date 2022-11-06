@@ -18,7 +18,7 @@ jobs:
         edit_summary: "Append Latest Update to File.txt"
         page_name: "User:盐棋/Sandbox2"
         api_url: "https://wiki.arcaea.cn/api.php"
-        username: "${{ secrets.WIKI_USEERNAME }}"
+        username: "${{ secrets.WIKI_USERNAME }}"
         password: ${{ secrets.WIKI_PASSWORD }}
         append: true
         minor: true
