@@ -2,7 +2,7 @@ name: arcaea-wiki-sometry
 
 on:
   schedule:
-    - cron: '5 * * * *'
+    - cron: '5/5 * * * *'
 
 jobs:
   append-file:
