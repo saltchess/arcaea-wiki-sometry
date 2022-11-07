@@ -1,8 +1,16 @@
+# https://docs.github.com/cn/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+# https://github.com/saltchess/arcaea-wiki-sometry/actions/workflows/trigger.yml
+# https://nodejs.org/api/fs.html
+# http://www.ruanyifeng.com/blog/2019/12/github_actions.html
+# https://stackoverflow.com/questions/68521765/how-to-cache-npm-dependencies-in-github-action
+# https://github.com/actions/setup-node#caching-global-packages-data
+# https://github.com/jtmullen/mediawiki-edit-action
+# https://wiki.arcaea.cn/Special:%E7%94%A8%E6%88%B7%E8%B4%A1%E7%8C%AE/GuBot
 name: arcaea-wiki-sometry
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
+  # schedule:
+  #   - cron: '* */2 * * *'
   workflow_dispatch:
 
 jobs:
