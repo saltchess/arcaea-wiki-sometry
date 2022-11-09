@@ -18,19 +18,19 @@ jobs:
     - run: pnpm i
     - run: |
         read URL VERSION TEXT < <(node ./js/test.js|xargs)
-        echo "URL=$URL" >> $GITHUB_ENV
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "TEXT=$TEXT" >> $GITHUB_ENV
+        echo "::set-output url=$URL"
+        echo "::set-output version=$VERSION"
+        echo "::set-output wikitext=$TEXT"
   download-apk:
     needs: url-inject
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo ${{ env.URL }}
-        echo ${{ env.VERSION }}
-        echo ${{ env.TEXT }}
+        echo ${{ needs.download-apk.outputs.url }}
+        echo ${{ needs.download-apk.outputs.version }}
+        echo ${{ needs.download-apk.outputs.wikitext }}
     - run: sudo apt-get install -y aria2
-    - run: aria2c ${{ env.URL }} -j 32 -c -o base.apk
+    - run: aria2c ${{ needs.download-apk.outputs.url }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
   edit-wikipage:
     needs: [url-inject, download-apk]
