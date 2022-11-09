@@ -4,8 +4,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  download-apk:
+  check-update:
     runs-on: ubuntu-latest
+    outputs:
+      url: ${{ env.URL }}
+      version: ${{ env.VERSION }}
+      wikitext: ${{ env.TEXT }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7.14.2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.15'
+        cache: 'pnpm'
+    - run: pnpm i
+  download-apk:
+    runs-on: check-update
     steps:
     - run: sudo apt-get install -y aria2
     - run: aria2c https://static-bin.lowiro.com/serve/arcaea_4.1.3c.apk?token=3Ad7D3EXvx7K5l4ZzS9Vc5sv8LxfKqEj7D7bBuYLXUoKQS1LNpKRdtwhNcQPNjmu9 -j 32 -c -o base.apk
@@ -17,7 +33,7 @@ jobs:
           ./base/assets/songs/
         key: ${{ runner.os }}-my_file
   edit-wikipage:
-    needs: download-apk
+    needs: [download-apk, check-update]
     runs-on: ubuntu-latest
     env:
       SONGS: ./base/assets/songs/
