@@ -10,33 +10,14 @@ name: arcaea-wiki-sometry
 
 on:
   schedule:
-    - cron: '* 23 * * *'
+    - cron: '55 23 * * *'
   workflow_dispatch:
 
 jobs:
-  # append-file:
-  #   name: Append File To Wiki Page
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Checkout Repo
-  #     uses: actions/checkout@v2
-  #   - name: Edit Wiki Page
-  #     uses: jtmullen/mediawiki-edit-action@v0
-  #     with: 
-  #       wiki_text: "path/to/file.txtlol"
-  #       edit_summary: "Append Latest Update to File.txt"
-  #       page_name: "User:盐棋/Sandbox2"
-  #       api_url: "https://wiki.arcaea.cn/api.php"
-  #       username: "${{ secrets.WIKI_USERNAME }}"
-  #       password: ${{ secrets.WIKI_PASSWORD }}
-  #       append: true
-  #       minor: true
   check-update:
     runs-on: ubuntu-latest
     outputs:
       url: ${{ env.URL }}
-      version: ${{ env.VERSION }}
-      wikitext: ${{ env.TEXT }}
     steps:
     - uses: actions/checkout@v2
     - uses: pnpm/action-setup@v2
@@ -50,8 +31,15 @@ jobs:
     - run: |
         read URL VERSION TEXT < <(node ./js/check-update.js 90|xargs)
         echo "URL=$URL" >> $GITHUB_ENV
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "TEXT=$TEXT" >> $GITHUB_ENV
+    - uses: jtmullen/mediawiki-edit-action@v0
+      with:
+        wiki_text: "${{ env.TEXT }}"
+        edit_summary: "Powered By Github Action"
+        page_name: "Template:version"
+        api_url: "https://wiki.arcaea.cn/api.php"
+        username: "${{ secrets.WIKI_USERNAME }}"
+        password: ${{ secrets.WIKI_PASSWORD }}
+        minor: true
   download-apk:
     runs-on: ubuntu-latest
     needs: check-update
@@ -59,8 +47,111 @@ jobs:
     - run: sudo apt-get install -y aria2
     - run: aria2c ${{ needs.url-inject.outputs.url }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
-  edit-wikipage:
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ./base/assets/songs/
+          !./base/assets/songs/*/
+        key: ${{ runner.os }}-my_file
+  edit-wikipage-1:
     needs: [check-update, download-apk]
     runs-on: ubuntu-latest
+    env:
+      SONGS: ./base/assets/songs
     steps:
-    - run: cat ./base/assets/songs/packlist
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ./base/assets/songs/
+          !./base/assets/songs/*/
+        key: ${{ runner.os }}-my_file
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7.14.2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.15'
+        cache: 'pnpm'
+    - run: pnpm i
+    - run: |
+        RESULT=$(node ./js/check-edit.js ${{ env.SONGS }}/packlist)
+        echo "RESULT=$RESULT" >> $GITHUB_ENV
+    - if: ${{ env.RESULT }} == 'false'
+      uses: jtmullen/mediawiki-edit-action@v0
+      with:
+        wiki_text_file: "${{ env.SONGS }}/packlist"
+        edit_summary: "Powered By Github Action"
+        page_name: "Template:packlist.json"
+        api_url: "https://wiki.arcaea.cn/api.php"
+        username: "${{ secrets.WIKI_USERNAME }}"
+        password: ${{ secrets.WIKI_PASSWORD }}
+        minor: true
+  edit-wikipage-2:
+    needs: [check-update, download-apk]
+    runs-on: ubuntu-latest
+    env:
+      SONGS: ./base/assets/songs
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ./base/assets/songs/
+          !./base/assets/songs/*/
+        key: ${{ runner.os }}-my_file
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7.14.2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.15'
+        cache: 'pnpm'
+    - run: pnpm i
+    - run: |
+        RESULT=$(node ./js/check-edit.js ${{ env.SONGS }}/songlist)
+        echo "RESULT=$RESULT" >> $GITHUB_ENV
+    - if: ${{ env.RESULT }} == 'false'
+      uses: jtmullen/mediawiki-edit-action@v0
+      with:
+        wiki_text_file: "${{ env.SONGS }}/songlist"
+        edit_summary: "Powered By Github Action"
+        page_name: "Template:songlist.json"
+        api_url: "https://wiki.arcaea.cn/api.php"
+        username: "${{ secrets.WIKI_USERNAME }}"
+        password: ${{ secrets.WIKI_PASSWORD }}
+        minor: true
+  edit-wikipage-3:
+    needs: [check-update, download-apk]
+    runs-on: ubuntu-latest
+    env:
+      SONGS: ./base/assets/songs
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ./base/assets/songs/
+          !./base/assets/songs/*/
+        key: ${{ runner.os }}-my_file
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7.14.2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.15'
+        cache: 'pnpm'
+    - run: pnpm i
+    - run: |
+        RESULT=$(node ./js/check-edit.js ${{ env.SONGS }}/unlocks)
+        echo "RESULT=$RESULT" >> $GITHUB_ENV
+    - if: ${{ env.RESULT }} == 'false'
+      uses: jtmullen/mediawiki-edit-action@v0
+      with:
+        wiki_text_file: "${{ env.SONGS }}/unlocks"
+        edit_summary: "Powered By Github Action"
+        page_name: "Template:unlocks.json"
+        api_url: "https://wiki.arcaea.cn/api.php"
+        username: "${{ secrets.WIKI_USERNAME }}"
+        password: ${{ secrets.WIKI_PASSWORD }}
+        minor: true
