@@ -21,6 +21,12 @@ jobs:
         echo "URL=$URL" >> $GITHUB_ENV
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         echo "TEXT=$TEXT" >> $GITHUB_ENV
+        echo ${#URL}
+        echo ${#VERSION}
+        echo ${#TEXT}
+        echo $URL
+        echo $VERSION
+        echo $TEXT
   download-apk:
     needs: url-inject
     runs-on: ubuntu-latest
