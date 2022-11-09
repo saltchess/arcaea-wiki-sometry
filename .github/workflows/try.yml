@@ -42,16 +42,15 @@ jobs:
           ./base/assets/songs/
           !./base/assets/songs/*/
         key: ${{ runner.os }}-my_file
-    - run: echo ${{ env.SONGS }}packlist
     - uses: pnpm/action-setup@v2
       with:
         version: 7.14.2
     - run: pnpm i
     - run: |
-        result=$(node ./js/check-edit.js ./base/assets/songs/packlist)
-        echo $result
-        echo "result=$result" >> $GITHUB_ENV
-    - if: env.result == 'false'
+        RESULT=$(node ./js/check-edit.js ${{ env.SONGS }}packlist)
+        echo $RESULT
+        echo "RESULT=$RESULT" >> $GITHUB_ENV
+    - if: env.RESULT == 'false'
       uses: jtmullen/mediawiki-edit-action@v0
       with:
         wiki_text_path: "./base/assets/songs/packlist"

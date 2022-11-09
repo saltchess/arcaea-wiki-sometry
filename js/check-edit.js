@@ -11,8 +11,8 @@ const { resolve } = require("path");
 			readFile(resolve(filePath), { encoding: 'utf8' })
 		]);
 		[wiki, contents] = [wiki, contents].map(JSON.parse).map(JSON.stringify)
-		console.debug(wiki)
-		console.debug(contents)
+		console.debug(wiki.length)
+		console.debug(contents.length)
 		console.log(String(wiki != contents))
 	} catch (error) {
 		console.error("error")
