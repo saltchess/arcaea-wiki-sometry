@@ -26,8 +26,8 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: |
-          !./base/assets/songs/*
           ./base/assets/songs/
+          !./base/assets/songs/*/
         key: ${{ runner.os }}-my_file
   edit-wikipage:
     needs: [download-apk, check-update]
@@ -42,7 +42,11 @@ jobs:
           ./base/assets/songs/
           !./base/assets/songs/*/
         key: ${{ runner.os }}-my_file
-    - run: echo ${{ env.SONGS }}/packlist
+    - run: echo ${{ env.SONGS }}packlist
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7.14.2
+    - run: pnpm i
     - run: |
         result=$(node ./js/check-edit.js ./base/assets/songs/packlist)
         echo "result=$result" >> $GITHUB_ENV
