@@ -22,11 +22,9 @@ jobs:
   download-apk:
     needs: url-inject
     runs-on: ubuntu-latest
-    env:
-      URL: ${{env.URL}}
     steps:
     - run: sudo apt-get install -y aria2
-    - run: aria2c $URL -j 32 -c -o base.apk
+    - run: aria2c ${{ env.URL }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
   edit-wikipage:
     needs: [url-inject, download-apk]
