@@ -25,7 +25,8 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: |
-          {{ env.SONGS }}
-          !{{ env.SONGS }}*/
+          ./base/assets/songs/
+          !./base/assets/songs/*/
         key: ${{ runner.os }}-my_file
-    - run: cat {{ env.SONGS }}packlist
+    - run: echo ${{ env.SONGS }}/packlist
+    - run: cat ./base/assets/songs/packlist
