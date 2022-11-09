@@ -18,9 +18,9 @@ jobs:
     - run: pnpm i
     - run: |
         read URL VERSION TEXT < <(node ./js/test.js|xargs)
-        echo "::set-output url=$URL"
-        echo "::set-output version=$VERSION"
-        echo "::set-output wikitext=$TEXT"
+        echo "::set-output name=url::$URL"
+        echo "::set-output name=version::$VERSION"
+        echo "::set-output name=wikitext::$TEXT"
   download-apk:
     needs: url-inject
     runs-on: ubuntu-latest
