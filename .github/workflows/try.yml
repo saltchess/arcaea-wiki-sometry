@@ -6,10 +6,6 @@ on:
 jobs:
   check-update:
     runs-on: ubuntu-latest
-    outputs:
-      url: ${{ env.URL }}
-      version: ${{ env.VERSION }}
-      wikitext: ${{ env.TEXT }}
     steps:
     - uses: actions/checkout@v2
     - uses: pnpm/action-setup@v2
@@ -38,6 +34,7 @@ jobs:
     env:
       SONGS: ./base/assets/songs/
     steps:
+    - uses: actions/checkout@v2
     - uses: actions/cache@v3
       with:
         path: |
@@ -49,4 +46,13 @@ jobs:
         result=$(node ./js/check-edit.js ./base/assets/songs/packlist)
         echo "result=$result" >> $GITHUB_ENV
     - if: env.result == 'false'
-      run: cat ./base/assets/songs/packlist
+      uses: jtmullen/mediawiki-edit-action@v0
+      with: really
+        wiki_text_path: "./base/assets/songs/packlist"
+        edit_summary: "Append Latest Update to File.txt"
+        page_name: "User:盐棋/Sandbox2"
+        api_url: "https://wiki.arcaea.cn/api.php"
+        username: "${{ secrets.WIKI_USERNAME }}"
+        password: ${{ secrets.WIKI_PASSWORD }}
+        append: true
+        minor: true
