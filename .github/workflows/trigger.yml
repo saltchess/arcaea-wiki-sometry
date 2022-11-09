@@ -1,64 +1,64 @@
-# # https://docs.github.com/cn/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
-# # https://github.com/saltchess/arcaea-wiki-sometry/actions/workflows/trigger.yml
-# # https://nodejs.org/api/fs.html
-# # http://www.ruanyifeng.com/blog/2019/12/github_actions.html
-# # https://stackoverflow.com/questions/68521765/how-to-cache-npm-dependencies-in-github-action
-# # https://github.com/actions/setup-node#caching-global-packages-data
-# # https://github.com/jtmullen/mediawiki-edit-action
-# # https://wiki.arcaea.cn/Special:%E7%94%A8%E6%88%B7%E8%B4%A1%E7%8C%AE/GuBot
-# name: arcaea-wiki-sometry
+# https://docs.github.com/cn/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+# https://github.com/saltchess/arcaea-wiki-sometry/actions/workflows/trigger.yml
+# https://nodejs.org/api/fs.html
+# http://www.ruanyifeng.com/blog/2019/12/github_actions.html
+# https://stackoverflow.com/questions/68521765/how-to-cache-npm-dependencies-in-github-action
+# https://github.com/actions/setup-node#caching-global-packages-data
+# https://github.com/jtmullen/mediawiki-edit-action
+# https://wiki.arcaea.cn/Special:%E7%94%A8%E6%88%B7%E8%B4%A1%E7%8C%AE/GuBot
+name: arcaea-wiki-sometry
 
-# on:
-#   schedule:
-#     - cron: '* 23 * * *'
-#   workflow_dispatch:
+on:
+  schedule:
+    - cron: '* 23 * * *'
+  workflow_dispatch:
 
-# jobs:
-#   # append-file:
-#   #   name: Append File To Wiki Page
-#   #   runs-on: ubuntu-latest
-#   #   steps:
-#   #   - name: Checkout Repo
-#   #     uses: actions/checkout@v2
-#   #   - name: Edit Wiki Page
-#   #     uses: jtmullen/mediawiki-edit-action@v0
-#   #     with: 
-#   #       wiki_text: "path/to/file.txtlol"
-#   #       edit_summary: "Append Latest Update to File.txt"
-#   #       page_name: "User:盐棋/Sandbox2"
-#   #       api_url: "https://wiki.arcaea.cn/api.php"
-#   #       username: "${{ secrets.WIKI_USERNAME }}"
-#   #       password: ${{ secrets.WIKI_PASSWORD }}
-#   #       append: true
-#   #       minor: true
-#   check-update:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v2
-#     - uses: pnpm/action-setup@v2
-#       with:
-#         version: 7.14.2
-#     - uses: actions/setup-node@v3
-#       with:
-#         node-version: '16.15'
-#         cache: 'pnpm'
-#     - run: pnpm i
-#     - run: |
-#       read URL VERSION TEXT < <(node ./js/check-update.js 90|xargs)
-#       echo "URL=$URL" >> $GITHUB_ENV
-#       echo "VERSION=$VERSION" >> $GITHUB_ENV
-#       echo "TEXT=$TEXT" >> $GITHUB_ENV
-#   download-apk:
-#     needs: check-update
-#     runs-on: ubuntu-latest
-#     env:
-#       URL: ${{env.URL}}
-#     steps:
-#     - run: sudo apt-get install -y aria2
-#     - run: aria2c $URL -j 32 -c -o base.apk
-#     - run: unzip ./base.apk -d ./base
-#   edit-wikipage:
-#     needs: [check-update, download-apk]
-#     runs-on: ubuntu-latest
-#     steps:
-#     - run: 
+jobs:
+  # append-file:
+  #   name: Append File To Wiki Page
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout Repo
+  #     uses: actions/checkout@v2
+  #   - name: Edit Wiki Page
+  #     uses: jtmullen/mediawiki-edit-action@v0
+  #     with: 
+  #       wiki_text: "path/to/file.txtlol"
+  #       edit_summary: "Append Latest Update to File.txt"
+  #       page_name: "User:盐棋/Sandbox2"
+  #       api_url: "https://wiki.arcaea.cn/api.php"
+  #       username: "${{ secrets.WIKI_USERNAME }}"
+  #       password: ${{ secrets.WIKI_PASSWORD }}
+  #       append: true
+  #       minor: true
+  check-update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7.14.2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.15'
+        cache: 'pnpm'
+    - run: pnpm i
+    - run: |
+      # read URL VERSION TEXT < "https://static-bin.lowiro.com/serve/arcaea_4.1.3c.apk?token=3Ad7D3EXvx7K5l4ZzS9Vc5sv8LxfKqEj7D7bBuYLXUoKQS1LNpKRdtwhNcQPNjmu9 4.1.4 xmxmxm"
+      echo "URL=$URL" >> $GITHUB_ENV
+      echo "VERSION=$VERSION" >> $GITHUB_ENV
+      echo "TEXT=$TEXT" >> $GITHUB_ENV
+  download-apk:
+    needs: check-update
+    runs-on: ubuntu-latest
+    env:
+      URL: ${{env.URL}}
+    steps:
+    - run: sudo apt-get install -y aria2
+    - run: aria2c $URL -j 32 -c -o base.apk
+    - run: unzip ./base.apk -d ./base
+  edit-wikipage:
+    needs: [check-update, download-apk]
+    runs-on: ubuntu-latest
+    steps:
+    - run: 
