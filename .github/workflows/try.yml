@@ -19,12 +19,13 @@ jobs:
   edit-wikipage:
     needs: download-apk
     runs-on: ubuntu-latest
+    env:
+      SONGS: ./base/assets/songs/
     steps:
     - uses: actions/cache@v3
       with:
         path: |
-          !./base/assets/songs/*
-          ./base/assets/songs/
+          {{ env.SONGS }}
+          !{{ env.SONGS }}*/
         key: ${{ runner.os }}-my_file
-    - run: node -v
-    - run: cat ./base/assets/songs/packlist
+    - run: cat {{ env.SONGS }}packlist
