@@ -49,6 +49,7 @@ jobs:
     - run: pnpm i
     - run: |
         result=$(node ./js/check-edit.js ./base/assets/songs/packlist)
+        echo $result
         echo "result=$result" >> $GITHUB_ENV
     - if: env.result == 'false'
       uses: jtmullen/mediawiki-edit-action@v0
