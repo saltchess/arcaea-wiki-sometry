@@ -26,11 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo ${{ needs.download-apk.outputs.url }}
-        echo ${{ needs.download-apk.outputs.version }}
-        echo ${{ needs.download-apk.outputs.wikitext }}
+        echo ${{ needs.url-inject.outputs.url }}
+        echo ${{ needs.url-inject.outputs.version }}
+        echo ${{ needs.url-inject.outputs.wikitext }}
     - run: sudo apt-get install -y aria2
-    - run: aria2c ${{ needs.download-apk.outputs.url }} -j 32 -c -o base.apk
+    - run: aria2c ${{ needs.url-inject.outputs.url }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
   edit-wikipage:
     needs: [url-inject, download-apk]
