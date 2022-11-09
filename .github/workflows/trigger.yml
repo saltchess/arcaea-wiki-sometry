@@ -9,25 +9,56 @@
 name: arcaea-wiki-sometry
 
 on:
-  # schedule:
-  #   - cron: '* */2 * * *'
+  schedule:
+    - cron: '* 23 * * *'
   workflow_dispatch:
 
 jobs:
-  append-file:
-    name: Append File To Wiki Page
+  # append-file:
+  #   name: Append File To Wiki Page
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout Repo
+  #     uses: actions/checkout@v2
+  #   - name: Edit Wiki Page
+  #     uses: jtmullen/mediawiki-edit-action@v0
+  #     with: 
+  #       wiki_text: "path/to/file.txtlol"
+  #       edit_summary: "Append Latest Update to File.txt"
+  #       page_name: "User:盐棋/Sandbox2"
+  #       api_url: "https://wiki.arcaea.cn/api.php"
+  #       username: "${{ secrets.WIKI_USERNAME }}"
+  #       password: ${{ secrets.WIKI_PASSWORD }}
+  #       append: true
+  #       minor: true
+  check-update:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2
-    - name: Edit Wiki Page
-      uses: jtmullen/mediawiki-edit-action@v0
-      with: 
-        wiki_text: "path/to/file.txtlol"
-        edit_summary: "Append Latest Update to File.txt"
-        page_name: "User:盐棋/Sandbox2"
-        api_url: "https://wiki.arcaea.cn/api.php"
-        username: "${{ secrets.WIKI_USERNAME }}"
-        password: ${{ secrets.WIKI_PASSWORD }}
-        append: true
-        minor: true
+    - uses: actions/checkout@v2
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7.14.2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.15'
+        cache: 'pnpm'
+    - run: pnpm i
+    - run: |
+      read URL VERSION TEXT < <(node ./js/check-update.js 90|xargs)
+      echo "URL=$URL" >> $GITHUB_ENV
+      echo "VERSION=$VERSION" >> $GITHUB_ENV
+      echo "TEXT=$TEXT" >> $GITHUB_ENV
+  download-apk:
+    needs: check-update
+    runs-on: ubuntu-latest
+    env:
+      URL: ${{env.URL}}
+    steps:
+    - run: sudo apt-get install -y aria2
+    - run: aria2c $URL -j 32 -c -o base.apk
+    - run: unzip ./base.apk -d ./base
+  edit-wikipage:
+    needs: [check-update, download-apk]
+    runs-on: ubuntu-latest
+    steps:
+    - run: 
