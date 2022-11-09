@@ -52,7 +52,7 @@ jobs:
     needs: check-update
     runs-on: ubuntu-latest
     env:
-      URL: ${{env.URL}}
+      URL: ${{ env.URL }}
     steps:
     - run: sudo apt-get install -y aria2
     - run: aria2c $URL -j 32 -c -o base.apk
