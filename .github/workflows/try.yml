@@ -33,7 +33,7 @@ jobs:
     needs: [download-apk, check-update]
     runs-on: ubuntu-latest
     env:
-      SONGS: ./base/assets/songs/
+      SONGS: ./base/assets/songs
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v3
@@ -45,15 +45,19 @@ jobs:
     - uses: pnpm/action-setup@v2
       with:
         version: 7.14.2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16.15'
+        cache: 'pnpm'
     - run: pnpm i
     - run: |
-        RESULT=$(node ./js/check-edit.js ${{ env.SONGS }}packlist)
+        RESULT=$(node ./js/check-edit.js ${{ env.SONGS }}/packlist)
         echo $RESULT
         echo "RESULT=$RESULT" >> $GITHUB_ENV
-    - if: env.RESULT == 'false'
+    - if: ${{ env.RESULT }} == 'false'
       uses: jtmullen/mediawiki-edit-action@v0
       with:
-        wiki_text_path: "./base/assets/songs/packlist"
+        wiki_text_path: "${{ env.SONGS }}/packlist"
         edit_summary: "Append Latest Update to File.txt"
         page_name: "User:盐棋/Sandbox2"
         api_url: "https://wiki.arcaea.cn/api.php"
