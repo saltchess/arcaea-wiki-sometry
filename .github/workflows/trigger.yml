@@ -33,6 +33,10 @@ jobs:
   #       minor: true
   check-update:
     runs-on: ubuntu-latest
+    outputs:
+      url: ${{ env.URL }}
+      version: ${{ env.VERSION }}
+      wikitext: ${{ env.TEXT }}
     steps:
     - uses: actions/checkout@v2
     - uses: pnpm/action-setup@v2
@@ -53,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: sudo apt-get install -y aria2
-    - run: aria2c ${{ env.URL }} -j 32 -c -o base.apk
+    - run: aria2c ${{ needs.url-inject.outputs.url }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
   edit-wikipage:
     needs: [check-update, download-apk]

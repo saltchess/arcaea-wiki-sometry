@@ -4,42 +4,27 @@ on:
   workflow_dispatch:
 
 jobs:
-  url-inject:
-    runs-on: ubuntu-latest
-    outputs:
-      url: ${{ steps.check.outputs.url }}
-      version: ${{ steps.check.outputs.version }}
-      wikitext: ${{ steps.check.outputs.wikitext }}
-    steps:
-    - uses: actions/checkout@v2
-    - uses: pnpm/action-setup@v2
-      with:
-        version: 7.14.2
-    - uses: actions/setup-node@v3
-      with:
-        node-version: '16.15'
-        cache: 'pnpm'
-    - run: pnpm i
-    - id: check
-      run: |
-        read URL VERSION TEXT < <(node ./js/test.js|xargs)
-        echo "::set-output name=url::$URL"
-        echo "::set-output name=version::$VERSION"
-        echo "::set-output name=wikitext::$TEXT"
   download-apk:
-    needs: url-inject
     runs-on: ubuntu-latest
     steps:
-    - run: |
-        echo ${{ needs.url-inject.outputs.url }}
-        echo ${{ needs.url-inject.outputs.version }}
-        echo ${{ needs.url-inject.outputs.wikitext }}
     - run: sudo apt-get install -y aria2
-    - run: aria2c ${{ needs.url-inject.outputs.url }} -j 32 -c -o base.apk
+    - run: aria2c https://static-bin.lowiro.com/serve/arcaea_4.1.3c.apk?token=3Ad7D3EXvx7K5l4ZzS9Vc5sv8LxfKqEj7D7bBuYLXUoKQS1LNpKRdtwhNcQPNjmu9 -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
+    - uses: actions/cache@v3
+      with:
+        path: |
+          !./base/assets/songs/*
+          ./base/assets/songs/
+        key: ${{ runner.os }}-my_file
   edit-wikipage:
     needs: [url-inject, download-apk]
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/cache@v3
+      with:
+        path: |
+          !./base/assets/songs/*
+          ./base/assets/songs/
+        key: ${{ runner.os }}-my_file
     - run: node -v
     - run: cat ./base/assets/songs/packlist
