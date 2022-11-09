@@ -17,7 +17,8 @@ jobs:
         cache: 'pnpm'
     - run: pnpm i
   download-apk:
-    runs-on: check-update
+    runs-on: ubuntu-latest
+    needs: check-update
     steps:
     - run: sudo apt-get install -y aria2
     - run: aria2c https://static-bin.lowiro.com/serve/arcaea_4.1.3c.apk?token=3Ad7D3EXvx7K5l4ZzS9Vc5sv8LxfKqEj7D7bBuYLXUoKQS1LNpKRdtwhNcQPNjmu9 -j 32 -c -o base.apk
