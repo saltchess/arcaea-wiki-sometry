@@ -21,22 +21,14 @@ jobs:
         echo "URL=$URL" >> $GITHUB_ENV
         echo "VERSION=$VERSION" >> $GITHUB_ENV
         echo "TEXT=$TEXT" >> $GITHUB_ENV
-    - run: |
-        echo ${#${{ env.URL }}}
-        echo ${#${{ env.VERSION }}}
-        echo ${#${{ env.TEXT }}}
-    - run: |
-        echo ${#${{ env.URL }}}
-        echo ${#${{ env.VERSION }}}
-        echo ${#${{ env.TEXT }}}
-    - run: |
-        echo ${{ env.URL }}
-        echo ${{ env.VERSION }}
-        echo ${{ env.TEXT }}
   download-apk:
     needs: url-inject
     runs-on: ubuntu-latest
     steps:
+    - run: |
+        echo ${{ env.URL }}
+        echo ${{ env.VERSION }}
+        echo ${{ env.TEXT }}
     - run: sudo apt-get install -y aria2
     - run: aria2c ${{ env.URL }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
