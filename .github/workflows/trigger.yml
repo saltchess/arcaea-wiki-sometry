@@ -61,4 +61,4 @@ jobs:
     needs: [check-update, download-apk]
     runs-on: ubuntu-latest
     steps:
-    - run: 
+    - run: cat ./base/assets/songs/packlist
