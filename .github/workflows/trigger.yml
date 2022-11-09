@@ -44,10 +44,10 @@ jobs:
         cache: 'pnpm'
     - run: pnpm i
     - run: |
-      # read URL VERSION TEXT < "https://static-bin.lowiro.com/serve/arcaea_4.1.3c.apk?token=3Ad7D3EXvx7K5l4ZzS9Vc5sv8LxfKqEj7D7bBuYLXUoKQS1LNpKRdtwhNcQPNjmu9 4.1.4 xmxmxm"
-      echo "URL=$URL" >> $GITHUB_ENV
-      echo "VERSION=$VERSION" >> $GITHUB_ENV
-      echo "TEXT=$TEXT" >> $GITHUB_ENV
+        read URL VERSION TEXT < <(node ./js/check-update.js 90|xargs)
+        echo "URL=$URL" >> $GITHUB_ENV
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "TEXT=$TEXT" >> $GITHUB_ENV
   download-apk:
     needs: check-update
     runs-on: ubuntu-latest
