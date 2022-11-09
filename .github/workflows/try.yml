@@ -29,4 +29,8 @@ jobs:
           !./base/assets/songs/*/
         key: ${{ runner.os }}-my_file
     - run: echo ${{ env.SONGS }}/packlist
-    - run: cat ./base/assets/songs/packlist
+    - run: |
+        result=$(node ./js/check-edit.js ./base/assets/songs/packlist)
+        echo "result=$result" >> $GITHUB_ENV
+    - if: env.result == 'false'
+      run: cat ./base/assets/songs/packlist
