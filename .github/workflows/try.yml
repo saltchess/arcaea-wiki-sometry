@@ -6,6 +6,10 @@ on:
 jobs:
   url-inject:
     runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.check.outputs.url }}
+      version: ${{ steps.check.outputs.version }}
+      wikitext: ${{ steps.check.outputs.wikitext }}
     steps:
     - uses: actions/checkout@v2
     - uses: pnpm/action-setup@v2
@@ -16,7 +20,8 @@ jobs:
         node-version: '16.15'
         cache: 'pnpm'
     - run: pnpm i
-    - run: |
+    - id: check
+      run: |
         read URL VERSION TEXT < <(node ./js/test.js|xargs)
         echo "::set-output name=url::$URL"
         echo "::set-output name=version::$VERSION"
