@@ -57,7 +57,7 @@ jobs:
     - if: ${{ env.RESULT }} == 'false'
       uses: jtmullen/mediawiki-edit-action@v0
       with:
-        wiki_text_path: "${{ env.SONGS }}/packlist"
+        wiki_text_file: "${{ env.SONGS }}/packlist"
         edit_summary: "Append Latest Update to File.txt"
         page_name: "User:盐棋/Sandbox2"
         api_url: "https://wiki.arcaea.cn/api.php"
