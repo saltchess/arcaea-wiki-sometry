@@ -10,7 +10,7 @@ name: arcaea-wiki-sometry
 
 on:
   schedule:
-    - cron: '55 23 * * *'
+    - cron: '0 23 * * *'
   workflow_dispatch:
 
 jobs:

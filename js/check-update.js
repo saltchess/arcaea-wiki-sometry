@@ -13,12 +13,12 @@ const base = Date.now();
 		])
 		let newVersion = official.version.replace(/c$/, "")
 		let result = wiki.replace(/(?<=mobile=v)\S+/, newVersion)
-		if (wiki != result) {
+		// if (wiki != result) {
 			console.log(official.url)
 			console.log(official.version)
 			console.log(result)
 			return
-		}
+		// }
 		console.warn("sleeping")
 		await new Promise(resolve => setTimeout(resolve, 1000 * 60))
 	}
