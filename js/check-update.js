@@ -10,7 +10,7 @@ const base = Date.now();
 			])
 			let newVersion = official.version.replace(/c$/, "")
 			let result = wiki.replace(/(?<=mobile=v)\S+/, newVersion)
-			if (wiki != result) {
+			if (wiki != result || process.argv[2] == 0) {
 				console.log(official.url)
 				console.log(official.version)
 				console.log(result)
