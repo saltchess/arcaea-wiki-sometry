@@ -31,6 +31,7 @@ jobs:
     - run: |
         read URL VERSION TEXT < <(node ./js/check-update.js 90|xargs)
         echo "URL=$URL" >> $GITHUB_ENV
+        echo "TEXT=$TEXT" >> $GITHUB_ENV
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
         wiki_text: "${{ env.TEXT }}"
@@ -45,7 +46,7 @@ jobs:
     needs: check-update
     steps:
     - run: sudo apt-get install -y aria2
-    - run: aria2c ${{ needs.url-inject.outputs.url }} -j 32 -c -o base.apk
+    - run: aria2c ${{ needs.check-update.outputs.url }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
     - uses: actions/cache@v3
       with:
