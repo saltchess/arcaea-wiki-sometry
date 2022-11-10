@@ -23,7 +23,7 @@ async function request() {
 				axios.get("https://webapi.lowiro.com/webapi/serve/static/bin/arcaea/apk").then(v => v.data.value),
 				axios.get(wiki_url({ titles: "Template:version" })).then(v => v.data.query.pages[0].revisions[0].content),
 			])
-		} catch { await new Promise(resolve => setTimeout(resolve, 1000)) }
+		} catch { console.warn("network"); await new Promise(resolve => setTimeout(resolve, 1000)) }
 	}
 	unexpected()
 }
