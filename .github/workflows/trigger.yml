@@ -36,7 +36,7 @@ jobs:
         echo "${rawText:1}" >> $GITHUB_ENV
         echo 'EOF' >> $GITHUB_ENV
         echo ${{ env.URL }}
-        echo "${{ env.TEXT }}""
+        echo "${{ env.TEXT }}"
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
         wiki_text: "${{ env.TEXT }}"
