@@ -29,12 +29,14 @@ jobs:
         cache: 'pnpm'
     - run: pnpm i
     - run: |
-        read -a ARR < <(node ./js/check-update.js 90 | xargs)
+        read -a ARR < <(node ./js/check-update.js 0 | xargs)
         echo "URL=${ARR[0]}" >> $GITHUB_ENV
         rawText="$( printf "\n%s" "${ARR[@]:2}" )"
         echo 'TEXT<<EOF' >> $GITHUB_ENV
         echo "${rawText:1}" >> $GITHUB_ENV
         echo 'EOF' >> $GITHUB_ENV
+        echo $rawText
+    - run: |
         echo ${{ env.URL }}
         echo "${{ env.TEXT }}"
     - uses: jtmullen/mediawiki-edit-action@v0
