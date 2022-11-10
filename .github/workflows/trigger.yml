@@ -29,7 +29,11 @@ jobs:
         cache: 'pnpm'
     - run: pnpm i
     - run: |
-        read -a ARR < <(node ./js/check-update.js 0 | xargs)
+        case ${{ github.event_name }} in
+        schedule) repeat=90;;
+        workflow_dispatch) repeat=0;;
+        esac
+        read -a ARR < <(node ./js/check-update.js $repeat | xargs)
         echo "URL=${ARR[0]}" >> $GITHUB_ENV
         rawText="$( printf "\n%s" "${ARR[@]:2}" )"
         echo 'TEXT<<EOF' >> $GITHUB_ENV
