@@ -1,6 +1,8 @@
 const axios = require("axios");
 const wiki_url = require("./wiki_url");
 const base = Date.now();
+const { writeFile } = require("node:fs/promises");
+const { resolve } = require("path");
 (async () => {
 	while (true) {
 		if (Date.now() - base >= 1000 * 60 * process.argv[2]) {
@@ -16,7 +18,7 @@ const base = Date.now();
 		// if (wiki != result) {
 			console.log(official.url)
 			console.log(official.version)
-			console.log(result)
+			await writeFile(resolve("./result"), { encoding: 'utf8' })
 			return
 		// }
 		console.warn("sleeping")

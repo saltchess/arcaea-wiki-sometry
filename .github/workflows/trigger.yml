@@ -9,8 +9,8 @@
 name: arcaea-wiki-sometry
 
 on:
-  schedule:
-    - cron: '0 23 * * *'
+  # schedule:
+  #   - cron: '0 23 * * *'
   workflow_dispatch:
 
 jobs:
@@ -34,9 +34,10 @@ jobs:
         echo "TEXT=$TEXT" >> $GITHUB_ENV
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
-        wiki_text: "${{ env.TEXT }}"
+        wiki_text_file: "./result"
         edit_summary: "Powered By Github Action"
-        page_name: "Template:version"
+        # page_name: "Template:version"
+        page_name: "User:盐棋/Sandbox1"
         api_url: "https://wiki.arcaea.cn/api.php"
         username: "${{ secrets.WIKI_USERNAME }}"
         password: ${{ secrets.WIKI_PASSWORD }}
