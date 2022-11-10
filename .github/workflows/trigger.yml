@@ -78,7 +78,7 @@ jobs:
     - run: |
         RESULT=$(node ./js/check-edit.js ${{ env.SONGS }}/packlist)
         echo "RESULT=$RESULT" >> $GITHUB_ENV
-    - if: ${{ env.RESULT }} == 'false'
+    - if: ${{ env.RESULT }} == 'true'
       uses: jtmullen/mediawiki-edit-action@v0
       with:
         wiki_text_file: "${{ env.SONGS }}/packlist"
@@ -112,7 +112,7 @@ jobs:
     - run: |
         RESULT=$(node ./js/check-edit.js ${{ env.SONGS }}/songlist)
         echo "RESULT=$RESULT" >> $GITHUB_ENV
-    - if: ${{ env.RESULT }} == 'false'
+    - if: ${{ env.RESULT }} == 'true'
       uses: jtmullen/mediawiki-edit-action@v0
       with:
         wiki_text_file: "${{ env.SONGS }}/songlist"
