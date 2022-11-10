@@ -18,7 +18,7 @@ const { resolve } = require("path");
 		// if (wiki != result) {
 			console.log(official.url)
 			console.log(official.version)
-			await writeFile(resolve("./result"), { encoding: 'utf8' })
+			await writeFile(resolve("/home/result"), { encoding: 'utf8' })
 			return
 		// }
 		console.warn("sleeping")
