@@ -34,7 +34,7 @@ jobs:
         echo "TEXT=$TEXT" >> $GITHUB_ENV
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
-        wiki_text_file: "./result"
+        wiki_text_file: "result"
         edit_summary: "Powered By Github Action"
         # page_name: "Template:version"
         page_name: "User:盐棋/Sandbox1"
