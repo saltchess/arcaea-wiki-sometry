@@ -34,7 +34,9 @@ jobs:
         'workflow_dispatch') repeat=0;;
         esac
         echo $repeat
-        read -a ARR < <(node ./js/check-update.js $repeat | xargs)
+        echo "repeat=$repeat" >> $GITHUB_ENV
+    - run: |
+        read -a ARR < <(node ./js/check-update.js ${{ env.repeat }} | xargs)
         echo "URL=${ARR[0]}" >> $GITHUB_ENV
         rawText="$( printf "\n%s" "${ARR[@]:2}" )"
         echo 'TEXT<<EOF' >> $GITHUB_ENV
