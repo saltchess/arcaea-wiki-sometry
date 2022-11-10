@@ -60,8 +60,8 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: |
-          /base/assets/songs/*
-          !/base/assets/songs/*/
+          ./base/assets/songs/*
+          !./base/assets/songs/*/
         key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
   edit-wikipage-1:
     needs: [check-update, download-apk]
@@ -72,8 +72,8 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: |
-          /base/assets/songs/*
-          !/base/assets/songs/*/
+          ./base/assets/songs/*
+          !./base/assets/songs/*/
         key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
@@ -93,8 +93,8 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: |
-          /base/assets/songs/*
-          !/base/assets/songs/*/
+          ./base/assets/songs/*
+          !./base/assets/songs/*/
         key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
@@ -114,8 +114,8 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: |
-          /base/assets/songs/*
-          !/base/assets/songs/*/
+          ./base/assets/songs/*
+          !./base/assets/songs/*/
         key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
