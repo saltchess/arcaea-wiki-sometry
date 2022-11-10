@@ -56,7 +56,8 @@ jobs:
     - run: sudo apt-get install -y aria2
     - run: aria2c ${{ needs.check-update.outputs.url }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
-    - &paramCache uses: actions/cache@v3
+    - &paramCache
+      uses: actions/cache@v3
       with:
         path: |
           ./base/assets/songs/*
