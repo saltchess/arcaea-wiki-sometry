@@ -9,9 +9,12 @@
 name: arcaea-wiki-sometry
 
 on:
-  # schedule:
-  #   - cron: '0 23 * * 4'
+  schedule:
+    - cron: '0 23 * * *'
   workflow_dispatch:
+
+env:
+  SONGS: ./base/assets/songs
 
 jobs:
   check-update:
@@ -30,11 +33,7 @@ jobs:
         cache: 'pnpm'
     - run: pnpm i
     - run: |
-        case "${{ github.event_name }}" in
-        'schedule') repeat=90;;
-        'workflow_dispatch') repeat=0;;
-        esac
-        read -a ARR < <(node ./js/check-update.js $repeat | xargs)
+        read -a ARR < <(node ./js/check-update.js ${{ github.event_name }} | xargs)
         echo "URL=${ARR[0]}" >> $GITHUB_ENV
         echo "VERSION=${ARR[1]}" >> $GITHUB_ENV
         rawText="$( printf "\n%s" "${ARR[@]:2}" )"
@@ -63,65 +62,24 @@ jobs:
           ./base/assets/songs/*
           !./base/assets/songs/*/
         key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
-  edit-wikipage-1:
+  edit-wikipage:
     needs: [check-update, download-apk]
     runs-on: ubuntu-latest
-    env:
-      SONGS: ./base/assets/songs
+    strategy:
+      matrix:
+        filename: [songlist, packlist, unlocks]
     steps:
     - uses: actions/cache@v3
       with:
         path: |
           ./base/assets/songs/*
           !./base/assets/songs/*/
-        key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
+        key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-songs
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
-        wiki_text_file: "${{ env.SONGS }}/songlist"
+        wiki_text_file: "${{ env.SONGS }}/${{ matrix.filename }}"
         edit_summary: "Powered By Github Action"
-        page_name: "Template:songlist.json"
-        api_url: "https://wiki.arcaea.cn/api.php"
-        username: "${{ secrets.WIKI_USERNAME }}"
-        password: ${{ secrets.WIKI_PASSWORD }}
-        minor: true
-  edit-wikipage-2:
-    needs: [check-update, download-apk]
-    runs-on: ubuntu-latest
-    env:
-      SONGS: ./base/assets/songs
-    steps:
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ./base/assets/songs/*
-          !./base/assets/songs/*/
-        key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
-    - uses: jtmullen/mediawiki-edit-action@v0
-      with:
-        wiki_text_file: "${{ env.SONGS }}/packlist"
-        edit_summary: "Powered By Github Action"
-        page_name: "Template:packlist.json"
-        api_url: "https://wiki.arcaea.cn/api.php"
-        username: "${{ secrets.WIKI_USERNAME }}"
-        password: ${{ secrets.WIKI_PASSWORD }}
-        minor: true
-  edit-wikipage-3:
-    needs: [check-update, download-apk]
-    runs-on: ubuntu-latest
-    env:
-      SONGS: ./base/assets/songs
-    steps:
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ./base/assets/songs/*
-          !./base/assets/songs/*/
-        key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
-    - uses: jtmullen/mediawiki-edit-action@v0
-      with:
-        wiki_text_file: "${{ env.SONGS }}/unlocks"
-        edit_summary: "Powered By Github Action"
-        page_name: "Template:unlocks.json"
+        page_name: "Template:${{ matrix.filename }}.json"
         api_url: "https://wiki.arcaea.cn/api.php"
         username: "${{ secrets.WIKI_USERNAME }}"
         password: ${{ secrets.WIKI_PASSWORD }}
