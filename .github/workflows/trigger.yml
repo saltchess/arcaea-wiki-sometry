@@ -32,9 +32,11 @@ jobs:
         read -a ARR < <(node ./js/check-update.js 90 | xargs)
         echo "URL=${ARR[0]}" >> $GITHUB_ENV
         rawText="$( printf "\n%s" "${ARR[@]:2}" )"
-        echo "TEXT=${rawText:1}" >> $GITHUB_ENV
+        echo 'TEXT<<EOF' >> $GITHUB_ENV
+        echo "${rawText:1}" >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
         echo ${{ env.URL }}
-        echo ${{ env.TEXT }}
+        echo "${{ env.TEXT }}""
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
         wiki_text: "${{ env.TEXT }}"
