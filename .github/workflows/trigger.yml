@@ -35,16 +35,16 @@ jobs:
         echo "TEXT=${rawText:1}" >> $GITHUB_ENV
         echo ${{ env.URL }}
         echo ${{ env.TEXT }}
-    # - uses: jtmullen/mediawiki-edit-action@v0
-    #   with:
-    #     wiki_text_file: "/home/result"
-    #     edit_summary: "Powered By Github Action"
-    #     # page_name: "Template:version"
-    #     page_name: "User:盐棋/Sandbox1"
-    #     api_url: "https://wiki.arcaea.cn/api.php"
-    #     username: "${{ secrets.WIKI_USERNAME }}"
-    #     password: ${{ secrets.WIKI_PASSWORD }}
-    #     minor: true
+    - uses: jtmullen/mediawiki-edit-action@v0
+      with:
+        wiki_text: "${{ env.TEXT }}"
+        edit_summary: "Powered By Github Action"
+        # page_name: "Template:version"
+        page_name: "User:盐棋/Sandbox1"
+        api_url: "https://wiki.arcaea.cn/api.php"
+        username: "${{ secrets.WIKI_USERNAME }}"
+        password: ${{ secrets.WIKI_PASSWORD }}
+        minor: true
   # download-apk:
   #   runs-on: ubuntu-latest
   #   needs: check-update
