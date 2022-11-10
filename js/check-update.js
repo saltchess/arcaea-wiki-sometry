@@ -4,7 +4,7 @@ const base = Date.now();
 (async () => {
 	while (true) {
 		try {
-			let [official, wiki] = await axios.all([
+			let [official, wiki] = await Promise.all([
 				axios.get("https://webapi.lowiro.com/webapi/serve/static/bin/arcaea/apk").then(v => v.data.value),
 				axios.get(wiki_url({ titles: "Template:version" })).then(v => v.data.query.pages[0].revisions[0].content),
 			])
