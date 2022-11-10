@@ -56,12 +56,12 @@ jobs:
     - run: sudo apt-get install -y aria2
     - run: aria2c ${{ needs.check-update.outputs.url }} -j 32 -c -o base.apk
     - run: unzip ./base.apk -d ./base
-    - uses: actions/cache@v3
+    - &paramCache uses: actions/cache@v3
       with:
         path: |
           ./base/assets/songs/*
           !./base/assets/songs/*/
-        key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-lists
+        key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-songs
   edit-wikipage:
     needs: [check-update, download-apk]
     runs-on: ubuntu-latest
@@ -69,12 +69,7 @@ jobs:
       matrix:
         filename: [songlist, packlist, unlocks]
     steps:
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ./base/assets/songs/*
-          !./base/assets/songs/*/
-        key: ${{ runner.os }}-${{ github.run_id}}-${{ needs.check-update.outputs.version }}-songs
+    - *paramCache
     - uses: jtmullen/mediawiki-edit-action@v0
       with:
         wiki_text_file: "${{ env.SONGS }}/${{ matrix.filename }}"
