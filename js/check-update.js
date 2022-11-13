@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { setFailed } = require("@actions/core");
 const wiki_url = require("./wiki_url");
 const base = Date.now();
 
@@ -10,41 +11,48 @@ const trigType = process.argv[2]
 let repeat
 switch (trigType) {
 	case "schedule":
-		repeat = new Date().getDay() == 4 ? 90 : 5
+		repeat = new Date().getUTCDay() == 3 ? 90 : 5
 		break
 	case "workflow_dispatch":
 		repeat = 0
 		break
 }
-async function request() {
-	for (let i = 0; i < 30; i++) {
-		try {
-			return await Promise.all([
-				axios.get("https://webapi.lowiro.com/webapi/serve/static/bin/arcaea/apk").then(v => v.data.value),
-				axios.get(wiki_url({ titles: "Template:version" })).then(v => v.data.query.pages[0].revisions[0].content),
-			])
-		} catch { console.warn("network"); await new Promise(resolve => setTimeout(resolve, 1000)) }
-	}
-	unexpected()
+function sleep(miliseconds) {
+	return new Promise(resolve => setTimeout(resolve, miliseconds))
 }
-function unexpected() {
-	console.error("\033[;31mtimeOut\033[0m")
-	process.exit(1)
+async function request() {
+	for (let i = 0; i < 3; i++) {
+		try {
+			return [undefined, await Promise.all([
+				axios.get("https://webapi.lowiro.com/webapi/serve/static/bin/arcaea/apk").then(v => v.data.value),
+				wiki_url({ titles: "Template:version" }),
+			])]
+		} catch { await sleep(1000) }
+	}
+	return [true]
 }
 (async () => {
 	while (true) {
-		let [official, wiki] = await request()
+		let [err, data] = await request()
+		if (err) {
+			console.warn("Network failure")
+			await sleep(1000 * 60)
+			continue
+		}
+		let [official, wiki] = data
 		let newVersion = official.version.replace(/c$/, "")
 		let result = wiki.replace(/(?<=mobile=v)\S+/, newVersion)
-		// if (wiki != result) {
 		if (wiki != result || trigType == "workflow_dispatch") {
 			console.log(official.url)
 			console.log(official.version)
 			console.log(result)
 			return
 		}
-		if (Date.now() - base >= 1000 * 60 * repeat) unexpected()
-		console.warn("sleeping")
-		await new Promise(resolve => setTimeout(resolve, 1000 * 60))
+		if (Date.now() - base >= 1000 * 60 * repeat) {
+			setFailed("\033[;31mtimeOut\033[0m")
+			process.exit(1)
+		}
+		console.warn("Sleeping")
+		await sleep(1000 * 60)
 	}
 })()
