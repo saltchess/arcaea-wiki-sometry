@@ -41,7 +41,7 @@ async function request() {
 		}
 		let [official, wiki] = data
 		let newVersion = official.version.replace(/c$/, "")
-		let result = wiki.replace(/(?<=mobile=v)\S+/, newVersion)
+		let result = wiki.replace(/(?<=mobile.*v)[\w.]+/, newVersion)
 		if (wiki != result || trigType == "workflow_dispatch") {
 			console.log(official.url)
 			console.log(official.version)
